@@ -1,12 +1,10 @@
-import token
 
 import curl_cffi.requests as requests
-from modules.helpers.header import Config,ua_builder
-from modules.helpers.avatar import get_pfps
+from modules.header import Config,ua_builder
+from modules.avatar import get_pfps
 from pathlib import Path
 import os
 from datetime import datetime
-
 BASE_DIR = Path(__file__).resolve().parent
 config = Config(BASE_DIR / "Input" / "config.json")
 
@@ -77,10 +75,15 @@ def main():
 
     response = client.update_avatar()
 
-    print(response.status_code)
-    print(response.text)
+    #print(response.status_code)
+    #print(response.text)
+
     if response.status_code==200:
-        print(f"Changed Avatar of {token[:10]}, status_code={response.status_code}")
+        print(f"Changed Avatar of {client.token[:10]+"********"}, status_code={response.status_code}")
     elif response.status_code==400:
         print(f"Hcaptcha occured, {response.text},{response.status_code}")
+    else:
+        print(f"{response.text},{response.status_code}")
 
+if __name__ == "__main__":
+    main()
