@@ -4,6 +4,10 @@
 
 A simple Python script that changes your Discord profile picture to a random image from a folder. It uses `curl_cffi` to mimic a real Chrome browser so your request doesn't get flagged as a bot.
 
+## Preview
+
+<video src="https://github.com/NoTinyxd/Pfp-Changer/blob/main/preview.mp4" controls></video>
+
 ## What it does
 
 * **Picks a random photo:** Pulls a `.png`, `.jpg`, `.jpeg`, or `.webp` file from `Input/pfps/`.
