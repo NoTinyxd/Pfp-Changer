@@ -1,12 +1,12 @@
----
-
 # Discord Avatar Changer
 
 A simple Python script that changes your Discord profile picture to a random image from a folder. It uses `curl_cffi` to mimic a real Chrome browser so your request doesn't get flagged as a bot.
 
 ## Preview
 
-<video src="https://raw.githubusercontent.com/NoTinyxd/Pfp-Changer/main/preview.mp4" controls width="600"></video>
+## Preview
+
+https://raw.githubusercontent.com/NoTinyxd/Pfp-Changer/main/preview.mp4
 
 ## What it does
 
