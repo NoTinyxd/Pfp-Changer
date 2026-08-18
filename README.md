@@ -6,7 +6,7 @@ A simple Python script that changes your Discord profile picture to a random ima
 
 ## Preview
 
-<video src="https://github.com/NoTinyxd/Pfp-Changer/blob/main/preview.mp4" controls></video>
+<video src="https://raw.githubusercontent.com/NoTinyxd/Pfp-Changer/main/preview.mp4" controls width="600"></video>
 
 ## What it does
 
