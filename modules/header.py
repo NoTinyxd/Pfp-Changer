@@ -9,6 +9,7 @@ from pathlib import Path
 
 class Config():
     def __init__(self,path):
+        self.session=requests.Session(impersonate=145)
         self.path=path
         self.data=self.load()
     def load(self):
