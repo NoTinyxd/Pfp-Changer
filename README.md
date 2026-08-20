@@ -1,98 +1,144 @@
 # Discord Avatar Changer
 
-A simple Python script that changes your Discord profile picture to a random image from a folder. It uses `curl_cffi` to mimic a real Chrome browser so your request doesn't get flagged as a bot.
+A small Python script that changes a Discord profile picture using an image from `Input/pfps/`.
+
+It uses curl_cffi for HTTP requests and automatically spoofs browser-related headers to mimic a Chrome client.
 
 ## Preview
 
-## Preview
+![Preview](preview.png)
 
-https://raw.githubusercontent.com/NoTinyxd/Pfp-Changer/main/preview.mp4
 
 ## What it does
 
-* **Picks a random photo:** Pulls a `.png`, `.jpg`, `.jpeg`, or `.webp` file from `Input/pfps/`.
-* **Prepares the image:** Converts the file into Base64 so Discord can read it.
-* **Fakes real browser headers:** Generates fresh `sec-ch-ua`, `x-super-properties`, and build info every time it runs.
-* **Updates profile:** Sends a `PATCH` request to Discord's API with your new picture.
+* **Random PFP:** Picks a random `.png`, `.jpg`, `.jpeg`, or `.webp` from `Input/pfps/`.
+* **Base64 encoding:** Converts the selected image into a format Discord accepts.
+* **Browser headers:** Builds `sec-ch-ua`, `x-super-properties`, installation ID, and other headers from the configured User-Agent.
+* **Token support:** Reads Discord tokens from `Input/token.txt`.
+* **Per-token timing:** Shows how long each account update takes.
+* **Simple output:** Reports successful updates and failed requests with their status codes.
 
-It does one thing: you run it, it changes your pfp, and it turns off. No bloated menus or background loops.
+The script runs through the tokens once and exits.
 
 ## Setup
 
-1.  Install the requirement:
-    ```bash
-    pip install curl_cffi
-    ```
-
-2.  Set up your folder like this:
-
-    ```text
-    project/
-    ├── Input/
-    │   ├── config.json
-    │   ├── token.txt        # Paste your Discord account token here
-    │   └── pfps/            # Put your avatar pictures here
-    └── src/
-        └── modules/
-            ├── helpers/
-            │   ├── header.py
-            │   └── avatar.py
-            └── main.py
-    ```
-
-3.  Make sure `Input/config.json` looks like this:
-
-    ```json
-    {
-      "useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
-    }
-    ```
-
-    Use a real Chrome User-Agent. The script reads the version number to build valid browser headers.
-
-## How to run
-
-Run the main file from your terminal:
+### 1. Install the requirement
 
 ```bash
-python src/modules/main.py
+pip install curl_cffi
 ```
 
-Here are the common response codes you might see:
+### 2. Project structure
 
-| Code | Status | Meaning |
-| :--- | :--- | :--- |
-| **`200`** |  Success | Profile picture changed successfully. |
-| **`400`** |  Bad Request | Hit hCaptcha. No support for captcha yet. |
+```text
+pfp_changer/
+├── Input/
+│   ├── config.json
+│   ├── token.txt
+│   └── pfps/
+│       └── image.png
+│
+└── src/
+    ├── main.py
+    └── modules/
+        ├── header.py
+        ├── avatar.py
+        └── log.py
+```
 
-## Might Add Later
+### 3. Configure your User-Agent
 
-It does what I need for now. If I feel like working on it later, I might add proxy support, multi-token runs, or auto-delays or any shit stuff. Or maybe I won't.
+`Input/config.json`:
 
-## Issues
+```json
+{
+  "useragent": "your useragent"
+}
+```
 
-If something breaks, open an Issue on GitHub with:
+The Chrome version is extracted from the User-Agent and used when generating the browser-related headers. Make sure the impersonate value matches the Chrome version in your User-Agent.
 
-1.  What you clicked/ran
-2.  What happened vs. what was supposed to happen
-3.  The response code and message (hide your token before pasting!)
-4.  Your OS and Python version
+### 4. Add your token
 
-*Don't DM me on Discord for support. Use GitHub issues.*
+`Input/token.txt` supports either a plain token:
+
+```text
+your token
+```
+
+or a colon-separated format where the token is the third field:
+
+```text
+something:something:YOUR_TOKEN
+```
+
+**Never share `token.txt`**
+
+### 5. Add your PFPs
+
+Put your images inside:
+
+```text
+Input/pfps/
+```
+
+Supported formats:
+
+```text
+.png
+.jpg
+.jpeg
+.webp
+```
+
+## Running
+
+From the project directory:
+
+```bash
+python src/main.py
+```
+
+A successful update looks like:
+
+```text
+Avatar updated successfully | token=YOUR_VISIBLE_PART*********************************************, status_code=200, took=2.26s
+```
+
+The token is partially hidden in the console output.
+
+## Response codes
+
+| Code  | Meaning                     |
+| ----- | --------------------------- |
+| `200` | Avatar updated successfully |
+| `400` | Bad request                 |
+| Other | Request failed              |
+
+The response body is printed for unsuccessful requests to help with debugging.
+
+## Notes
+
+* The execution time shown is measured **individually for each token**.
+* The script generates a new set of browser-related values when creating each client.
+* Keep your `token.txt` and `config.json` private.
+* Don't paste your token when reporting an issue.
 
 ## Rules
 
-* **Don't skid it:** Don't copy this code, change the name, and pretend you built it.
-* **Don't sell it:** This is free. Selling it or hiding it behind a paywall makes you a scammer.
-* **Keep it personal:** Use it on your own accounts and your own computer.
-* **Give credit:** If you fork this or use parts of it, link back here.
+* Don't copy the project, rename it, and claim you made it.
+* Don't sell or paywall the project.
+* Use it only with accounts you own or are authorized to manage.
+* If you use parts of the code, give credit and link back to this repository.
 
 ## Disclaimer
 
-This is for educational purposes. Use it at your own risk. If Discord flags or bans your account, that's on you.
+This project is provided for educational purposes. Use it at your own risk. The author isn't responsible for account restrictions, loss of access, or other consequences resulting from its use.
 
 ## ☕ Donations
 
-This tool is 100% free. If it saved you some time and you want to throw a few bucks my way, LTC is appreciated:
+This project is free. If it saved you some time and you want to support it, LTC is appreciated:
 
-`LXdgPhE4UfVUgtfXkT7wR1T4Jxam9sCsbb`
+```text
+LXdgPhE4UfVUgtfXkT7wR1T4Jxam9sCsbb
+```
