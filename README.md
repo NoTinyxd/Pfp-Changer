@@ -13,7 +13,7 @@ It uses curl_cffi for HTTP requests and automatically spoofs browser-related hea
 
 * **Random PFP:** Picks a random `.png`, `.jpg`, `.jpeg`, or `.webp` from `Input/pfps/`.
 * **Base64 encoding:** Converts the selected image into a format Discord accepts.
-* **Browser headers:** Builds `sec-ch-ua`, `x-super-properties`, installation ID, and other headers from the configured User-Agent.
+* **Browser headers:** Builds `sec-ch-ua`, `x-super-properties` and other headers from the User-Agent in config.json.
 * **Token support:** Reads Discord tokens from `Input/token.txt`.
 * **Per-token timing:** Shows how long each account update takes.
 * **Simple output:** Reports successful updates and failed requests with their status codes.
