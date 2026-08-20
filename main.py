@@ -5,6 +5,9 @@ from modules.avatar import get_pfps
 from pathlib import Path
 import os
 from datetime import datetime
+from time import perf_counter
+from modules.log import *
+proxy = "" 
 BASE_DIR = Path(__file__).resolve().parent
 config = Config(BASE_DIR / "Input" / "config.json")
 
@@ -16,18 +19,28 @@ def clear_terminal():
         
 class Changer():
     
-    def __init__(self, config_path, token_path):
+    def __init__(self, config_path, token):
         self.config=config_path
         self.ua=(self.config.get("useragent"))
-        self.token_path = token_path
-        self.token = self.tokens_load()
+        self.token = token
         self.v = ua_builder(self.ua)
         self.headers = self.build_headers()
         self.session = requests.Session(impersonate="chrome145")
-    def tokens_load(self):
-        with open(self.token_path,'r') as token_file:
-            token = token_file.read().strip()
-            return token
+
+    @staticmethod
+    def tokens_load(token_path):
+        tokens = []
+        with open(token_path, 'r') as token_file:
+            for line in token_file:
+                line = line.strip()
+                if not line:
+                    continue
+                parts = line.split(':')
+                if len(parts) == 3:
+                    tokens.append(parts[2])
+                elif len(parts) == 1:
+                    tokens.append(parts[0])
+        return tokens
 
     def build_headers(self):
         return {
@@ -67,23 +80,29 @@ class Changer():
         )
 
         return response
-
+def logs():
+    timestamp=[{datetime.now().strftime('%H:%M:%S')}]
+    
 def main():
     clear_terminal()
     
-    client = Changer(config, "Input/token.txt")
+    tokens = Changer.tokens_load("Input/token.txt")
+    stars = "*" * 45
+    for token in tokens:
+        try:
+            start = perf_counter() # or put this outside i just keep it here to calculate for each token
+            client = Changer(config, token)
+            response = client.update_avatar()
 
-    response = client.update_avatar()
 
-    #print(response.status_code)
-    #print(response.text)
-
-    if response.status_code==200:
-        print(f"Changed Avatar of {client.token[:10]+"********"}, status_code={response.status_code}")
-    elif response.status_code==400:
-        print(f"Hcaptcha occured, {response.text},{response.status_code}")
-    else:
-        print(f"{response.text},{response.status_code}")
-
+            elapsed = perf_counter() - start
+            if response.status_code==200:
+                success(f"Avatar updated successfully | token={token[:34]}{stars}, status_code={response.status_code}, took={elapsed:.2f}s")
+            elif response.status_code==400:
+                warning(f"response={response.text}, status_code={response.status_code}") #maybe ratelimit,hcap ,or unknown session
+            else:
+                error(f"response={response.text}, status_code={response.status_code}")
+        except Exception as e:
+            print(f"Failed exception={e}")
 if __name__ == "__main__":
     main()
