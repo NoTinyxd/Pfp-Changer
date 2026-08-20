@@ -80,8 +80,7 @@ class Changer():
         )
 
         return response
-def logs():
-    timestamp=[{datetime.now().strftime('%H:%M:%S')}]
+
     
 def main():
     clear_terminal()
